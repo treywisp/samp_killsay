@@ -37,7 +37,6 @@ local encoding = require("encoding")
 local sampev = require("samp.events")
 local ffi = require("ffi")
 local addons = require("ADDONS")
-local json = require("json")
 
 -- encoding
 encoding.default = 'CP1251'
@@ -48,6 +47,7 @@ local data_file_path = getWorkingDirectory() .. "\\killsay_table.json"
 local player_data = {}
 
 local mark_data = {}
+local script_image
 
 local script_states = {
     antiflood = false
@@ -162,7 +162,7 @@ local function tableSaveData()
     local file = io.open(data_file_path, 'w')
     if not file then return false end
 
-    local content = json.encode(player_data)
+    local content = encodeJson(player_data)
     file:write(content)
     file:close()
     return true
@@ -202,7 +202,7 @@ local function tableLoadData()
     local content = file:read('*a')
     file:close()
 
-    local ok, data = pcall(json.decode, content)
+    local ok, data = pcall(decodeJson, content)
     if not ok then return false end
 
     player_data = data or {}
